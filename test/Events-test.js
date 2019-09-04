@@ -28,7 +28,7 @@ describe("Events", () => {
     events = new Events(creds, options);
   });
 
-  it("should allow an event to be added to a conversation", () => {
+  it("should allow an event to be created on a conversation", () => {
     const conversationId = "CON-eeefffggg-444555666";
     var event = {
       type: "custom:test",
@@ -37,7 +37,7 @@ describe("Events", () => {
         thing: "monkey"
       }
     };
-    events.add(conversationId, event, emptyCallback);
+    events.create(conversationId, event, emptyCallback);
 
     var expectedRequestArgs = ResourceTestHelper.requestArgsMatch(event, {
       path: `${Events.PATH.replace("{conversation_uuid}", conversationId)}`

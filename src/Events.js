@@ -25,7 +25,7 @@ class Events {
   }
 
   /**
-   * Adds an event to a conversation.
+   * Create an event on the conversation.
    *
    * @param {string} conversationId - The conversation to trigger the event on.
    * @param {object} event - the event parameters
@@ -34,7 +34,7 @@ class Events {
    * @param {object} event.body - the event payload
    * @param {function} callback - function to be called when the request completes.
    */
-  add(conversationId, params, callback) {
+  create(conversationId, params, callback) {
     params = JSON.stringify(params);
 
     var config = {
@@ -64,7 +64,7 @@ class Events {
       host: "api.nexmo.com",
       path:
         Events.PATH.replace("{conversation_uuid}", conversationId) +
-        (typeof eventId !== 'function' ? `/${eventId}` : ""),
+        (typeof eventId !== "function" ? `/${eventId}` : ""),
       method: "GET",
       headers: {
         "Content-Type": "application/json",

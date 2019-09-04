@@ -20,7 +20,7 @@ module.exports = function(callback, config) {
     .then(conversation => {
       console.log(conversation.id)
 
-      return events.addAsync(conversation.id,
+      return events.createAsync(conversation.id,
       {
         type: "custom:test",
         body: {
@@ -29,7 +29,7 @@ module.exports = function(callback, config) {
       }).then(firstEventResult => {
         console.log('1st Event creation successful', firstEventResult);
 
-        return events.addAsync(conversation.id,
+        return events.createAsync(conversation.id,
           {
             type: "custom:test2",
             body: {
