@@ -3,6 +3,7 @@
 import nexmo from "./index";
 
 import Members from "./Members";
+import Events from "./Events";
 
 /**
  * Provides access to the `conversations` endpoint.
@@ -26,6 +27,11 @@ class Conversations {
      * @type Members
      */
     this.members = new Members(this.creds, this.options);
+
+    /**
+     * @type Events
+     */
+    this.events = new Events(this.creds, this.options);
 
     // Used to facilitate testing of the call to the underlying object
     this._nexmo = this.options.nexmoOverride || nexmo;
@@ -62,13 +68,27 @@ class Conversations {
    * @param {function} callback - function to be called when the request completes.
    */
   get(query, callback) {
-    this._nexmo.getWithQuery(
-      Conversations.PATH,
-      query,
-      this.creds,
-      this.options,
-      callback
-    );
+    callback = typeof query === "function" ? query : callback;
+
+    var pathExt = "";
+    if (typeof query === "string") {
+      // single call Id
+      pathExt = `/${query}`;
+    } else if (typeof query === "object" && Object.keys(query).length > 0) {
+      // filter
+      pathExt = `?${querystring.stringify(query)}`;
+    }
+
+    var config = {
+      host: "api.nexmo.com",
+      path: Conversations.PATH + pathExt,
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.creds.generateJwt()}`
+      }
+    };
+    this.options.httpClient.request(config, callback);
   }
 
   /**

@@ -11,5 +11,9 @@ module.exports = function(callback, config) {
     {debug: config.DEBUG}
   );
 
-  nexmo.conversations.get({}, callback);
+  nexmo.conversations.get((error, result) => {
+    console.log(JSON.stringify(result, null, 2))
+
+    callback(error, result)
+  });
 };

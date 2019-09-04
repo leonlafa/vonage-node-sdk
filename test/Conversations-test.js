@@ -8,6 +8,7 @@ import ResourceTestHelper from "./ResourceTestHelper";
 
 import Conversations from "../lib/Conversations";
 import Members from "../lib/Members";
+import Events from "../lib/Events";
 import HttpClient from "../lib/HttpClient";
 import Credentials from "../lib/Credentials";
 
@@ -109,5 +110,9 @@ describe("Conversations", () => {
 
   it("should expose a members property", () => {
     expect(conversations.members).to.be.an.instanceOf(Members);
+  });
+
+  it("should expose an events property", () => {
+    expect(conversations.events).to.be.an.instanceOf(Events);
   });
 });
