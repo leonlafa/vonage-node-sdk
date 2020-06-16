@@ -1,5 +1,4 @@
 import { Endpoint, AuthType } from './endpoint';
-import Nexmo from '.';
 
 type SmsRequest = {
   to: string;
@@ -28,28 +27,30 @@ type SmsErrorResponse = {
 };
 
 class Sms extends Endpoint {
-  constructor(client: Nexmo) {
-    super(client);
-  }
-
   baseUrlType(): string {
     return 'rest';
+  }
+
+  defaultHeaders(): object {
+    return {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
   }
 
   authType(): AuthType {
     return AuthType.Query;
   }
 
-  async send(params: SmsRequest, callback?: CallableFunction) {
+  async send(params: SmsRequest): Promise<SmsResponse> {
     const data = await this.post<SmsResponse>('/sms/json', params);
 
     // Extract any failing messages
     const failing = data.messages.filter((m) => m.status !== '0');
     if (failing.length > 0) {
-      return this.error(data.messages[0], callback);
+      return Promise.reject(data.messages[0]);
     }
 
-    return this.respond(data, callback);
+    return data;
   }
 }
 

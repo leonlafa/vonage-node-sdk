@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import Nexmo from '.';
-const maybe = require('call-me-maybe');
+import * as qs from 'querystring';
 
 enum AuthType {
   Query,
@@ -42,11 +42,17 @@ class Endpoint {
     return 'https://api.nexmo.com';
   }
 
+  defaultHeaders(): object {
+    return {};
+  }
+
   post<type>(url, data, headers = {}) {
     return this.request<type>('post', url, data, headers);
   }
 
   async request<type>(method, url, data, headers = {}) {
+    headers = Object.assign({}, this.defaultHeaders(), headers);
+
     ({ url, data, headers } = this.authenticateRequest(
       url,
       data,
@@ -54,17 +60,22 @@ class Endpoint {
       method
     ));
 
-    const r = await this.http.request<type>({
-      method,
-      url,
-      data,
-      headers,
-    });
+    if (headers['Content-Type'] === 'application/x-www-form-urlencoded') {
+      data = qs.stringify(data);
+    }
 
-    // 404 won't throw, but everything else will
-    // @TODO: Handle it here
+    try {
+      const r = await this.http.request<type>({
+        method,
+        url,
+        data,
+        headers,
+      });
 
-    return r.data;
+      return r.data;
+    } catch (e) {
+      return Promise.reject(this.handleError(e.response));
+    }
   }
 
   authenticateRequest(url, data, headers, method) {
@@ -77,23 +88,19 @@ class Endpoint {
       data.api_secret = this.nexmo.auth.apiSecret;
     }
 
+    if (this.authType() == AuthType.JWT) {
+      headers.Authorization = 'Bearer ' + this.generateJwt();
+    }
+
     return { url, data, headers, method };
   }
 
-  error(err, callback): object {
-    if (typeof callback == 'function') {
-      return callback(err);
-    }
-
-    return Promise.reject(err);
+  generateJwt() {
+    return '---';
   }
 
-  respond(data, callback): object {
-    if (typeof callback == 'function') {
-      return callback(null, data);
-    }
-
-    return Promise.resolve(data);
+  handleError(e) {
+    return new Error('Generic error :: ' + JSON.stringify(e.data));
   }
 }
 
