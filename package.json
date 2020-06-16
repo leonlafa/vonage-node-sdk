@@ -20,8 +20,17 @@
   "contributors": [
     "mheap"
   ],
-  "scripts": {},
-  "devDependencies": {},
+  "scripts": {
+    "lint": "eslint src/**/*.{js,ts} --no-error-on-unmatched-pattern",
+    "lint-fix": "eslint --fix src/**/*.{js,ts} --no-error-on-unmatched-pattern"
+  },
+  "devDependencies": {
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-typescript-prettier": "^2.1.1",
+    "prettier": "^2.0.5",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.5"
+  },
   "dependencies": {},
   "license": "MIT"
 }
