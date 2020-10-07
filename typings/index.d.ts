@@ -1,5 +1,5 @@
 /*
- * TOOD: add prefix for Verify api's typings like Message api on next major update.
+ * TODO: add prefix for Verify api's typings like Message api on next major update.
  *       RequestObject -> VerifyRequestObject
  *       RequestResponse -> VerifyRequestResponse
  *       RequestResponseStatusCode -> VerifyRequestResponseStatusCode
